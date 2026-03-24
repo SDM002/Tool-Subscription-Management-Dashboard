@@ -1,54 +1,30 @@
-"""
-app/routes/dashboard.py  [NEW]
-
-Dashboard endpoints:
-  GET /api/dashboard/summary   → spending totals + renewals
-  GET /api/dashboard/renewals  → upcoming renewals (configurable window)
-  GET /api/dashboard/insights  → AI-free cost-saving insights
-"""
-
-from fastapi import APIRouter, Depends, Query
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.auth.dependencies import get_current_user
-from app.core.database import get_db
-from app.models.user import User
-from app.schemas.dashboard import DashboardSummaryResponse, RenewalItem
-from app.services.dashboard_service import dashboard_service
-from app.services.pricing_service import pricing_service, InsightItem
-
-router = APIRouter(prefix="/dashboard", tags=["Dashboard"])
+from datetime import date
+from pydantic import BaseModel
 
 
-@router.get("/summary", response_model=DashboardSummaryResponse)
-async def get_dashboard_summary(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> DashboardSummaryResponse:
-    """
-    Full dashboard summary:
-    total spend, upcoming renewals (7-day + 30-day), breakdown by category.
-    """
-    return await dashboard_service.get_summary(db, current_user.id)
+class RenewalItem(BaseModel):
+    id: int
+    tool_name: str
+    category: str
+    renewal_date: date
+    days_until_renewal: int
+    price: float
+    billing_cycle: str
+    currency: str
 
 
-@router.get("/renewals", response_model=list[RenewalItem])
-async def get_upcoming_renewals(
-    days: int = Query(30, ge=1, le=365, description="Look-ahead window in days"),
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> list[RenewalItem]:
-    """Return subscriptions renewing within the next N days."""
-    return await dashboard_service.get_upcoming_renewals(db, current_user.id, days)
+class SpendByCategoryItem(BaseModel):
+    category: str
+    monthly_cost: float
+    yearly_cost: float
+    count: int
 
 
-@router.get("/insights")
-async def get_spending_insights(
-    db: AsyncSession = Depends(get_db),
-    current_user: User = Depends(get_current_user),
-) -> list[InsightItem]:
-    """
-    Rule-based spending insights:
-    duplicates, annual-billing savings, high-cost tools.
-    """
-    return await pricing_service.get_insights(db, current_user.id)
+class DashboardSummaryResponse(BaseModel):
+    total_subscriptions: int
+    active_subscriptions: int
+    total_monthly_spend: float
+    total_yearly_spend: float
+    due_this_week: list[RenewalItem]
+    due_this_month: list[RenewalItem]
+    spend_by_category: list[SpendByCategoryItem]

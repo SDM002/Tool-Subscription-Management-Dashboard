@@ -1,15 +1,8 @@
 """
-app/core/database.py  [NEW]
-
-Async SQLAlchemy engine + session factory.
-Uses SQLite now, but DATABASE_URL can be swapped to PostgreSQL without
-touching any other file — just change the URL and install asyncpg.
-
-Pattern used throughout the app:
-    async with get_db() as db:
-        result = await db.execute(...)
+app/core/database.py
+Async SQLAlchemy engine + session.
+Swap DATABASE_URL to PostgreSQL without touching anything else.
 """
-
 import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
@@ -24,39 +17,28 @@ from sqlalchemy.orm import DeclarativeBase
 from app.core.config import settings
 
 
-# ── Base class for all ORM models ────────────────────────────
 class Base(DeclarativeBase):
     pass
 
 
-# ── Engine ───────────────────────────────────────────────────
-# echo=True logs all SQL in dev — turn off in production
 engine = create_async_engine(
     settings.database_url,
     echo=settings.debug,
-    # SQLite-specific: required for async multi-thread access
     connect_args={"check_same_thread": False}
-    if "sqlite" in settings.database_url
-    else {},
+    if "sqlite" in settings.database_url else {},
 )
 
-# ── Session factory ──────────────────────────────────────────
 AsyncSessionLocal = async_sessionmaker(
     bind=engine,
     class_=AsyncSession,
-    expire_on_commit=False,  # keep objects usable after commit
+    expire_on_commit=False,
     autoflush=False,
     autocommit=False,
 )
 
 
-# ── Dependency for FastAPI routes ────────────────────────────
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    """
-    FastAPI dependency that yields a database session.
-    Usage in a route:
-        async def my_route(db: AsyncSession = Depends(get_db)):
-    """
+    """FastAPI dependency — yields one session per request."""
     async with AsyncSessionLocal() as session:
         try:
             yield session
@@ -68,10 +50,9 @@ async def get_db() -> AsyncGenerator[AsyncSession, None]:
             await session.close()
 
 
-# ── Context manager variant (for services/background tasks) ──
 @asynccontextmanager
 async def get_db_context() -> AsyncGenerator[AsyncSession, None]:
-    """Use this outside of FastAPI dependency injection."""
+    """For background jobs / scheduler — not FastAPI dep injection."""
     async with AsyncSessionLocal() as session:
         try:
             yield session
@@ -84,16 +65,7 @@ async def get_db_context() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def create_tables() -> None:
-    """Create all tables on startup if they don't exist."""
-    # Ensure the data directory exists
     db_path = settings.database_url.replace("sqlite+aiosqlite:///", "")
     os.makedirs(os.path.dirname(db_path) or ".", exist_ok=True)
-
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
-
-
-async def drop_tables() -> None:
-    """Drop all tables — used in tests only."""
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.drop_all)

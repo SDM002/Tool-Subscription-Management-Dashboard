@@ -1,14 +1,13 @@
 """
-app/main.py  [NEW]
-
+app/main.py
 FastAPI application factory.
-- Registers all routers
 - Creates DB tables on startup
+- Registers all routers under /api
+- Starts the reminder scheduler
 - Serves the static frontend
-- Configures CORS for local development
 """
-
 import logging
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -17,22 +16,18 @@ from fastapi.staticfiles import StaticFiles
 
 from app.core.config import settings
 from app.core.database import create_tables
-
-# Import all models so SQLAlchemy metadata is populated before create_tables()
-import app.models  # noqa: F401
+import app.models  # noqa: F401 — registers all ORM models with SQLAlchemy
 
 logger = logging.getLogger(__name__)
 
 
-# ── Lifespan (startup / shutdown) ────────────────────────────
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # STARTUP
-    logger.info("Starting up %s …", settings.app_name)
+    logger.info("Starting %s …", settings.app_name)
     await create_tables()
     logger.info("Database tables ready.")
 
-    # Start scheduler (phases 3+) — imported lazily to avoid circular imports
     try:
         from app.services.reminder_service import reminder_service
         reminder_service.start()
@@ -51,51 +46,39 @@ async def lifespan(app: FastAPI):
         pass
 
 
-# ── App instance ─────────────────────────────────────────────
 def create_app() -> FastAPI:
     app = FastAPI(
         title=settings.app_name,
         version="1.0.0",
-        description="Manage your software subscriptions with an AI assistant.",
+        description="Subscription dashboard with LangGraph + Groq + MCP agent",
         lifespan=lifespan,
         docs_url="/api/docs",
         redoc_url="/api/redoc",
         openapi_url="/api/openapi.json",
     )
 
-    # ── CORS ─────────────────────────────────────────────────
     app.add_middleware(
         CORSMiddleware,
-        allow_origins=["*"] if settings.debug else ["https://yourdomain.com"],
+        allow_origins=["*"] if settings.debug else [],
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
     )
 
-    # ── API Routers ───────────────────────────────────────────
+    # Register all API routers
     from app.auth.routes import router as auth_router
     from app.routes.subscriptions import router as sub_router
+    from app.routes.dashboard import router as dash_router
+    from app.routes.chat import router as chat_router
     from app.routes.health import router as health_router
 
-    app.include_router(auth_router, prefix="/api")
-    app.include_router(sub_router, prefix="/api")
+    app.include_router(auth_router,   prefix="/api")
+    app.include_router(sub_router,    prefix="/api")
+    app.include_router(dash_router,   prefix="/api")
+    app.include_router(chat_router,   prefix="/api")
     app.include_router(health_router, prefix="/api")
 
-    # Phase 2 routers (dashboard + chat) — added after implementation
-    try:
-        from app.routes.dashboard import router as dashboard_router
-        app.include_router(dashboard_router, prefix="/api")
-    except ImportError:
-        pass
-
-    try:
-        from app.routes.chat import router as chat_router
-        app.include_router(chat_router, prefix="/api")
-    except ImportError:
-        pass
-
-    # ── Static frontend ───────────────────────────────────────
-    import os
+    # Serve static frontend at /
     static_dir = os.path.join(os.path.dirname(os.path.dirname(__file__)), "static")
     if os.path.isdir(static_dir):
         app.mount("/", StaticFiles(directory=static_dir, html=True), name="static")

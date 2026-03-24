@@ -1,15 +1,5 @@
-"""
-app/schemas/auth.py  [NEW]
-
-Pydantic v2 schemas for authentication requests and responses.
-These validate incoming data and shape outgoing responses —
-ORM models never leave the service layer directly.
-"""
-
 from pydantic import BaseModel, EmailStr, Field, field_validator
 
-
-# ── Request schemas ───────────────────────────────────────────
 
 class UserRegisterRequest(BaseModel):
     email: EmailStr
@@ -31,15 +21,8 @@ class UserLoginRequest(BaseModel):
     password: str
 
 
-class RefreshTokenRequest(BaseModel):
-    refresh_token: str
-
-
-# ── Response schemas ──────────────────────────────────────────
-
 class UserResponse(BaseModel):
     model_config = {"from_attributes": True}
-
     id: int
     email: str
     full_name: str
@@ -48,7 +31,6 @@ class UserResponse(BaseModel):
 
 class TokenResponse(BaseModel):
     access_token: str
-    refresh_token: str
     token_type: str = "bearer"
     user: UserResponse
 

@@ -6,78 +6,153 @@
   <title>Tool Subscription Dashboard</title>
   <link rel="stylesheet" href="/styles.css" />
 
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
-  --primary: #16a34a;
-  --primary-dark: #15803d;
-  --primary-light: #dcfce7;
-  --accent: #22c55e;
-  --bg: #f0fdf4;
-  --card-bg: #ffffff;
-  --text: #064e3b;
-  --text-muted: #6b7280;
-  --border: #d1fae5;
-  --shadow: 0 8px 24px rgba(0,0,0,0.08);
+:root{
+  --green:#16a34a;
+  --green-dark:#15803d;
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#6b7280;
+  --border:#e5e7eb;
 }
 
-body {
-  margin: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
-  color: var(--text);
+/* RESET */
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif;}
+body{background:var(--bg);color:var(--text);}
+
+/* LAYOUT */
+#app{display:flex;min-height:100vh;}
+
+/* SIDEBAR */
+.sidebar{
+  width:260px;
+  background:linear-gradient(180deg,#022c22,#064e3b);
+  color:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:20px 16px;
+}
+.sidebar-logo{display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:20px;}
+.nav-section-label{font-size:12px;color:#bbf7d0;margin:12px 0 6px;}
+.nav-item{
+  width:100%;
+  text-align:left;
+  padding:10px 12px;
+  border-radius:8px;
+  margin-bottom:6px;
+  border:none;
+  background:none;
+  color:#fff;
+  cursor:pointer;
+}
+.nav-item:hover{background:rgba(255,255,255,0.08);}
+.nav-item.active{background:var(--green);}
+
+/* MAIN */
+.main-content{
+  flex:1;
+  padding:30px 40px;
+  max-width:1200px;
+  margin:0 auto;
+  width:100%;
 }
 
-.auth-card, .table-wrapper, .chat-container, .modal {
-  background: var(--card-bg);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
+/* PAGE HEADER */
+.page-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+.page-title{font-size:24px;font-weight:700;color:var(--green-dark);}
+.page-subtitle{color:var(--muted);font-size:14px;}
+
+/* CARD */
+.table-wrapper,.chat-container,.auth-card,.modal{
+  background:var(--card);
+  border-radius:16px;
+  box-shadow:0 10px 30px rgba(0,0,0,0.06);
+  padding:18px;
 }
 
-.btn {
-  border-radius: 10px;
-  padding: 10px 14px;
-  font-weight: 600;
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
+/* BUTTONS */
+.btn{
+  border:none;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn-primary{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#fff;
+}
+.btn-secondary{
+  background:#ecfdf5;
+  color:var(--green);
+}
+button:hover{transform:translateY(-1px);}
+
+/* INPUT */
+input,select,textarea{
+  width:100%;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--border);
+}
+input:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 2px rgba(34,197,94,.2);}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse;}
+th,td{padding:14px;text-align:left;}
+th{font-size:13px;color:var(--muted);}
+td{border-top:1px solid var(--border);}
+
+/* TOOLBAR */
+.table-toolbar{
+  display:flex;
+  gap:10px;
+  margin-bottom:15px;
+}
+.search-input{flex:1;}
+
+/* CHAT */
+.chat-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:#fff;
+  padding:14px;
+  border-radius:12px 12px 0 0;
+}
+.chat-input-row{display:flex;gap:10px;margin-top:10px;}
+.chat-input{flex:1;}
+.chat-send-btn{
+  background:var(--green);
+  color:#fff;
+  border:none;
+  border-radius:10px;
+  padding:10px 14px;
 }
 
-.btn-primary {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
+/* AUTH CENTER */
+.auth-page{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
 }
+.auth-card{width:380px;}
 
-.btn-primary:hover {
-  background: linear-gradient(135deg, #16a34a, #15803d);
-}
+/* MODAL */
+.modal{width:500px;max-width:90%;}
 
-.btn-secondary {
-  background: #ecfdf5;
-  color: var(--primary);
-}
-
-input, select, textarea {
-  border-radius: 10px;
-  border: 1px solid var(--border);
-}
-
-.sidebar {
-  background: linear-gradient(180deg, #064e3b, #022c22);
-  color: white;
-}
-
-.nav-item.active {
-  background: #16a34a;
-}
-
-.page-title {
-  color: var(--primary-dark);
-}
-
-.chat-header {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-}
+/* SMALL FIXES */
+.loading-page,.text-center{text-align:center;}
 </style>
 
 </head>

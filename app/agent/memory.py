@@ -1,17 +1,17 @@
 """
-app/agent/memory.py  [NEW]
+app/agent/memory.py
+Two-layer memory:
 
-Two-layer memory for the AI assistant:
+SHORT-TERM (SQL)
+  - Last N messages per (user_id, session_id)
+  - Loaded at start of each turn as LangChain message objects
+  - Saved after each turn
 
-SHORT-TERM  — SQL table (chat_memories)
-  • Last N messages in a session, retrieved per conversation turn.
-  • Stored per (user_id, session_id).
-
-LONG-TERM   — ChromaDB vector store
-  • Semantically meaningful facts extracted from conversations.
-  • Searched by similarity at the start of each turn to inject
-    relevant context from past sessions.
-  • Stored per user_id (collection namespace).
+LONG-TERM (ChromaDB)
+  - Semantically meaningful summaries of past exchanges
+  - Searched by cosine similarity at start of each turn
+  - Injected into the system prompt as context
+  - One collection per user for isolation
 """
 
 import logging
@@ -19,7 +19,8 @@ import uuid
 from datetime import datetime, timezone
 
 import chromadb
-from sqlalchemy import select, delete
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from sqlalchemy import delete, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import settings
@@ -27,7 +28,7 @@ from app.models.chat_memory import ChatMemory
 
 logger = logging.getLogger(__name__)
 
-# ── ChromaDB client (persistent) ─────────────────────────────
+# ── ChromaDB ──────────────────────────────────────────────────
 _chroma_client: chromadb.ClientAPI | None = None
 
 
@@ -40,64 +41,53 @@ def _get_chroma_client() -> chromadb.ClientAPI:
     return _chroma_client
 
 
-def _get_user_collection(user_id: int) -> chromadb.Collection:
-    """Each user gets their own ChromaDB collection for data isolation."""
+def _user_collection(user_id: int) -> chromadb.Collection:
+    """Each user gets their own isolated ChromaDB collection."""
     client = _get_chroma_client()
-    collection_name = f"{settings.chroma_collection}_user_{user_id}"
     return client.get_or_create_collection(
-        name=collection_name,
+        name=f"{settings.chroma_collection}_user_{user_id}",
         metadata={"hnsw:space": "cosine"},
     )
 
 
-# ── Short-term memory (SQL) ───────────────────────────────────
+# ── Short-term: load history as LangChain message objects ─────
 
-SHORT_TERM_WINDOW = 20  # max messages to include in context
+SHORT_TERM_WINDOW = 20
 
 
 async def load_short_term(
-    db: AsyncSession,
-    user_id: int,
-    session_id: str,
-    limit: int = SHORT_TERM_WINDOW,
-) -> list[dict]:
-    """Load the last `limit` messages for a session as {role, content} dicts."""
+    db: AsyncSession, user_id: int, session_id: str, limit: int = SHORT_TERM_WINDOW
+) -> list:
+    """Return last N messages as HumanMessage / AIMessage objects."""
     result = await db.execute(
         select(ChatMemory)
-        .where(
-            ChatMemory.user_id == user_id,
-            ChatMemory.session_id == session_id,
-        )
+        .where(ChatMemory.user_id == user_id, ChatMemory.session_id == session_id)
         .order_by(ChatMemory.created_at.desc())
         .limit(limit)
     )
-    rows = result.scalars().all()
-    # Reverse so oldest is first (chronological order for the LLM)
-    return [{"role": r.role, "content": r.content} for r in reversed(rows)]
+    rows = list(reversed(result.scalars().all()))
+
+    messages = []
+    for r in rows:
+        if r.role == "human":
+            messages.append(HumanMessage(content=r.content))
+        elif r.role == "ai":
+            messages.append(AIMessage(content=r.content))
+        # tool messages are not replayed — they're ephemeral
+    return messages
 
 
 async def save_message(
-    db: AsyncSession,
-    user_id: int,
-    session_id: str,
-    role: str,
-    content: str,
+    db: AsyncSession, user_id: int, session_id: str, role: str, content: str
 ) -> None:
-    """Persist a single message to short-term SQL memory."""
-    msg = ChatMemory(
-        user_id=user_id,
-        session_id=session_id,
-        role=role,
-        content=content,
-    )
-    db.add(msg)
+    """Persist one message (human | ai) to short-term SQL memory."""
+    db.add(ChatMemory(
+        user_id=user_id, session_id=session_id, role=role, content=content
+    ))
     await db.flush()
 
 
-async def clear_session(
-    db: AsyncSession, user_id: int, session_id: str
-) -> None:
-    """Delete all messages in a session (e.g. 'start new chat')."""
+async def clear_session(db: AsyncSession, user_id: int, session_id: str) -> None:
     await db.execute(
         delete(ChatMemory).where(
             ChatMemory.user_id == user_id,
@@ -106,61 +96,44 @@ async def clear_session(
     )
 
 
-# ── Long-term memory (ChromaDB) ───────────────────────────────
+# ── Long-term: ChromaDB ───────────────────────────────────────
 
-async def search_long_term(
-    user_id: int, query: str, n_results: int = 3
-) -> list[str]:
-    """
-    Semantically search past conversation facts.
-    Returns a list of relevant text snippets to inject as context.
-    """
+async def search_long_term(user_id: int, query: str, n_results: int = 3) -> list[str]:
+    """Return semantically similar snippets from past conversations."""
     try:
-        collection = _get_user_collection(user_id)
-        count = collection.count()
+        col   = _user_collection(user_id)
+        count = col.count()
         if count == 0:
             return []
-
-        results = collection.query(
+        results = col.query(
             query_texts=[query],
             n_results=min(n_results, count),
         )
-        docs = results.get("documents", [[]])[0]
-        return [d for d in docs if d]
+        return [d for d in results.get("documents", [[]])[0] if d]
     except Exception as exc:
         logger.warning("Long-term memory search failed: %s", exc)
         return []
 
 
 async def save_to_long_term(
-    user_id: int,
-    session_id: str,
-    content: str,
-    metadata: dict | None = None,
+    user_id: int, session_id: str, content: str, metadata: dict | None = None
 ) -> None:
-    """
-    Store a fact or summary in ChromaDB for long-term retrieval.
-    Called after assistant replies with meaningful content.
-    """
+    """Store a summary of the exchange in ChromaDB for future retrieval."""
     try:
-        collection = _get_user_collection(user_id)
-        doc_id = f"{user_id}_{session_id}_{uuid.uuid4().hex[:8]}"
-        collection.add(
+        col = _user_collection(user_id)
+        col.add(
             documents=[content],
-            ids=[doc_id],
-            metadatas=[
-                {
-                    "user_id": str(user_id),
-                    "session_id": session_id,
-                    "timestamp": datetime.now(timezone.utc).isoformat(),
-                    **(metadata or {}),
-                }
-            ],
+            ids=[f"{user_id}_{session_id}_{uuid.uuid4().hex[:8]}"],
+            metadatas=[{
+                "user_id":    str(user_id),
+                "session_id": session_id,
+                "timestamp":  datetime.now(timezone.utc).isoformat(),
+                **(metadata or {}),
+            }],
         )
     except Exception as exc:
-        logger.warning("Failed to save to long-term memory: %s", exc)
+        logger.warning("Long-term memory save failed: %s", exc)
 
 
-def generate_session_id() -> str:
-    """Generate a new unique session ID."""
+def new_session_id() -> str:
     return uuid.uuid4().hex

@@ -1,31 +1,39 @@
 # Web framework
 fastapi==0.111.0
 uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+
+# LangGraph + Groq (YOUR architecture)
+langgraph==0.2.28
+langchain==0.3.1
+langchain-core==0.3.6
+langchain-groq==0.2.0
+
+# MCP (YOUR architecture)
+#mcp==1.0.0
 
 # Database
 sqlalchemy==2.0.30
-aiosqlite==0.20.0        # async SQLite driver
-alembic==1.13.1          # future migrations
+aiosqlite==0.20.0
 
-# Validation
-pydantic==2.7.1
+# Validation & config
+pydantic>=2.8.0,<3
 pydantic-settings==2.3.0
 email-validator==2.1.1
+python-dotenv==1.0.1
 
 # Auth
 python-jose[cryptography]==3.3.0
 passlib[bcrypt]==1.7.4
 bcrypt==4.0.1
-python-multipart==0.0.9
 
-# Scheduling & email
+# Scheduler & email
 apscheduler==3.10.4
 aiosmtplib==3.0.1
 
-# LLM & long-term memory
-anthropic==0.28.0
+# Long-term memory
 chromadb==0.5.3
 
-# Utilities
-python-dotenv==1.0.1
+# HTTP
+requests==2.32.3
 httpx==0.27.0

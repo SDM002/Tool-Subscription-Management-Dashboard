@@ -1,33 +1,7 @@
-"""
-app/schemas/subscription.py  [NEW]
-
-Pydantic v2 schemas for subscription CRUD.
-Separates create / update / response shapes cleanly.
-"""
-
 from datetime import date, datetime
 from typing import Optional
-
 from pydantic import BaseModel, Field, field_validator
-
 from app.models.subscription import BillingCycle
-
-
-VALID_CATEGORIES = [
-    "Productivity",
-    "Design",
-    "Development",
-    "Communication",
-    "Storage & Cloud",
-    "Security",
-    "Analytics",
-    "Marketing",
-    "Finance",
-    "AI & ML",
-    "Entertainment",
-    "Education",
-    "Other",
-]
 
 
 class SubscriptionCreateRequest(BaseModel):
@@ -44,14 +18,13 @@ class SubscriptionCreateRequest(BaseModel):
 
     @field_validator("billing_cycle")
     @classmethod
-    def validate_billing_cycle(cls, v: str) -> str:
+    def validate_cycle(cls, v: str) -> str:
         if v not in BillingCycle.ALL:
             raise ValueError(f"billing_cycle must be one of {BillingCycle.ALL}")
         return v
 
 
 class SubscriptionUpdateRequest(BaseModel):
-    """All fields optional — PATCH semantics."""
     tool_name: Optional[str] = Field(default=None, min_length=1, max_length=255)
     category: Optional[str] = Field(default=None, max_length=100)
     start_date: Optional[date] = None
@@ -65,7 +38,7 @@ class SubscriptionUpdateRequest(BaseModel):
 
     @field_validator("billing_cycle")
     @classmethod
-    def validate_billing_cycle(cls, v: str | None) -> str | None:
+    def validate_cycle(cls, v: str | None) -> str | None:
         if v is not None and v not in BillingCycle.ALL:
             raise ValueError(f"billing_cycle must be one of {BillingCycle.ALL}")
         return v
@@ -73,7 +46,6 @@ class SubscriptionUpdateRequest(BaseModel):
 
 class SubscriptionResponse(BaseModel):
     model_config = {"from_attributes": True}
-
     id: int
     user_id: int
     tool_name: str
