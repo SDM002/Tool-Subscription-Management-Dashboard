@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tool Subscription Dashboard</title>
+  <link rel="stylesheet" href="/styles.css" />
+
+<style>
+:root {
+  --primary: #16a34a;
+  --primary-dark: #15803d;
+  --primary-light: #dcfce7;
+  --accent: #22c55e;
+  --bg: #f0fdf4;
+  --card-bg: #ffffff;
+  --text: #064e3b;
+  --text-muted: #6b7280;
+  --border: #d1fae5;
+  --shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #ecfdf5, #f0fdf4);
+  color: var(--text);
+}
+
+.auth-card, .table-wrapper, .chat-container, .modal {
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+}
+
+.btn {
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #16a34a, #15803d);
+}
+
+.btn-secondary {
+  background: #ecfdf5;
+  color: var(--primary);
+}
+
+input, select, textarea {
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+
+.sidebar {
+  background: linear-gradient(180deg, #064e3b, #022c22);
+  color: white;
+}
+
+.nav-item.active {
+  background: #16a34a;
+}
+
+.page-title {
+  color: var(--primary-dark);
+}
+
+.chat-header {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: white;
+}
+</style>
+
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH PAGE  (shown when not logged in)
+═══════════════════════════════════════════════════════════ -->
+<div id="auth-page" class="auth-page" style="display:none">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <span class="logo-icon">📦</span>
+      <h1>SubTracker</h1>
+      <p>Manage subscriptions intelligently</p>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login"    onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab"        data-tab="register" onclick="switchTab('register')">Create Account</button>
+    </div>
+
+    <!-- Login form -->
+    <form id="login-form">
+      <div class="form-group">
+        <label>Email</label>
+        <input id="login-email" type="email" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input id="login-password" type="password" placeholder="••••••••" required autocomplete="current-password" />
+      </div>
+      <div id="login-error" class="error-msg"></div>
+      <button id="login-btn" type="submit" class="btn btn-primary" style="margin-top:8px">Sign In</button>
+    </form>
+
+    <!-- Register form -->
+    <form id="register-form" style="display:none">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input id="reg-name" type="text" placeholder="Jane Smith" required autocomplete="name" />
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input id="reg-email" type="email" placeholder="you@example.com" required autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label>Password <span style="font-weight:400;color:var(--text-muted)">(min 8 chars, 1 letter + 1 number)</span></label>
+        <input id="reg-password" type="password" placeholder="••••••••" required autocomplete="new-password" />
+      </div>
+      <div id="reg-error" class="error-msg"></div>
+      <button id="reg-btn" type="submit" class="btn btn-primary" style="margin-top:8px">Create Account</button>
+    </form>
+
+  </div>
+</div><!-- /auth-page -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     APP (shown when logged in)
+═══════════════════════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- ── Sidebar ──────────────────────────────────────────── -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a class="sidebar-logo" href="#" onclick="navigate('dashboard')">
+        <span class="icon">📦</span>
+        <span class="name">SubTracker</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-label">Main</div>
+
+      <button class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+        <span class="nav-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-item" data-page="subscriptions" onclick="navigate('subscriptions')">
+        <span class="nav-icon">📋</span> Subscriptions
+      </button>
+      <button class="nav-item" data-page="renewals" onclick="navigate('renewals')">
+        <span class="nav-icon">🔔</span> Renewals
+      </button>
+      <button class="nav-item" data-page="insights" onclick="navigate('insights')">
+        <span class="nav-icon">💡</span> Insights
+      </button>
+
+      <div class="nav-section-label" style="margin-top:12px">Assistant</div>
+      <button class="nav-item" data-page="chat" onclick="navigate('chat')">
+        <span class="nav-icon">🤖</span> AI Assistant
+      </button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-info">
+        <div class="user-avatar" id="sidebar-avatar">U</div>
+        <div>
+          <div class="user-name"  id="sidebar-name">User</div>
+          <div class="user-email" id="sidebar-email">user@email.com</div>
+        </div>
+      </div>
+      <button class="btn btn-secondary btn-sm" style="width:100%" onclick="logout()">
+        🚪 Sign Out
+      </button>
+    </div>
+  </aside><!-- /sidebar -->
+
+
+  <!-- ── Main content ──────────────────────────────────────── -->
+  <main class="main-content">
+
+    <!-- ── Dashboard page ──────────────────────────────────── -->
+    <div id="page-dashboard" class="page active">
+      <div class="loading-page">
+        <span class="spinner" style="border-color:rgba(102,126,234,0.3);border-top-color:var(--accent)"></span>
+        Loading…
+      </div>
+    </div>
+
+    <!-- ── Subscriptions page ───────────────────────────────── -->
+    <div id="page-subscriptions" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Subscriptions</div>
+          <div class="page-subtitle">All your software tools in one place</div>
+        </div>
+        <button class="btn btn-primary" style="width:auto" onclick="openAddModal()">
+          ＋ Add Subscription
+        </button>
+      </div>
+
+      <div class="table-wrapper">
+        <div class="table-toolbar">
+          <input  id="sub-search"     class="search-input"  type="search" placeholder="🔍 Search by name or category…" />
+          <select id="sub-filter-cat" class="filter-select">
+            <option value="">All Categories</option>
+            <option>Productivity</option>
+            <option>Design</option>
+            <option>Development</option>
+            <option>Communication</option>
+            <option>Storage &amp; Cloud</option>
+            <option>Security</option>
+            <option>Analytics</option>
+            <option>Marketing</option>
+            <option>Finance</option>
+            <option>AI &amp; ML</option>
+            <option>Entertainment</option>
+            <option>Education</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div style="overflow-x:auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Tool</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Cycle</th>
+                <th>Monthly Cost</th>
+                <th>Renewal</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="sub-tbody">
+              <tr><td colspan="7" class="text-center" style="padding:40px;color:var(--text-muted)">
+                Loading subscriptions…
+              </td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div><!-- /page-subscriptions -->
+
+    <!-- ── Renewals page ────────────────────────────────────── -->
+    <div id="page-renewals" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Upcoming Renewals</div>
+          <div class="page-subtitle">Subscriptions renewing in the next 90 days</div>
+        </div>
+        <button class="btn btn-secondary" onclick="loadRenewals()">↻ Refresh</button>
+      </div>
+      <div id="renewals-list">
+        <div class="loading-page">Loading…</div>
+      </div>
+    </div>
+
+    <!-- ── Insights page ────────────────────────────────────── -->
+    <div id="page-insights" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Spending Insights</div>
+          <div class="page-subtitle">Cost-saving recommendations and spending analysis</div>
+        </div>
+        <button class="btn btn-secondary" onclick="loadInsights()">↻ Refresh</button>
+      </div>
+      <div id="insights-list">
+        <div class="loading-page">Loading insights…</div>
+      </div>
+    </div>
+
+    <!-- ── Chat page ─────────────────────────────────────────── -->
+    <div id="page-chat" class="page">
+      <div class="page-header">
+        <div>
+          <div class="page-title">AI Assistant</div>
+          <div class="page-subtitle">Ask questions about your subscriptions</div>
+        </div>
+      </div>
+
+      <div class="chat-container">
+        <!-- Chat header -->
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <div class="chat-avatar">🤖</div>
+            <div>
+              <div class="chat-name">Subscription Assistant</div>
+              <div class="chat-status">● Powered by Claude</div>
+            </div>
+          </div>
+          <button class="new-session-btn" onclick="startNewSession()">＋ New Chat</button>
+        </div>
+
+        <!-- Messages -->
+        <div class="chat-messages" id="chat-messages">
+          <div id="typing-indicator" class="typing-indicator">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+          </div>
+        </div>
+
+        <!-- Input area -->
+        <div class="chat-input-area">
+          <div class="chat-suggestions" id="chat-suggestions">
+            <button class="suggestion-chip" onclick="sendSuggestion('What is my total monthly spend?')">💳 Monthly spend</button>
+            <button class="suggestion-chip" onclick="sendSuggestion('What subscriptions renew this week?')">🔔 This week</button>
+            <button class="suggestion-chip" onclick="sendSuggestion('How can I reduce my subscription costs?')">💰 Save money</button>
+            <button class="suggestion-chip" onclick="sendSuggestion('Show me all my subscriptions')">📋 All subs</button>
+            <button class="suggestion-chip" onclick="sendSuggestion('Do I have any duplicate tools?')">🔁 Duplicates</button>
+          </div>
+          <div class="chat-input-row">
+            <textarea
+              id="chat-input"
+              class="chat-input"
+              placeholder="Ask about your subscriptions…"
+              rows="1"
+            ></textarea>
+            <button id="chat-send-btn" class="chat-send-btn" onclick="sendChatMessage()" title="Send (Enter)">
+              ➤
+            </button>
+          </div>
+        </div>
+      </div><!-- /chat-container -->
+    </div><!-- /page-chat -->
+
+  </main><!-- /main-content -->
+</div><!-- /app -->
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SUBSCRIPTION MODAL
+═══════════════════════════════════════════════════════════ -->
+<div id="sub-modal" class="modal-overlay" onclick="handleModalOverlayClick(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <div class="modal-title" id="modal-title">Add Subscription</div>
+      <button class="modal-close" onclick="closeModal()" title="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="modal-body"><!-- form injected by JS --></div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button id="modal-save-btn" class="btn btn-primary" style="width:auto">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     TOAST CONTAINER
+═══════════════════════════════════════════════════════════ -->
+<div id="toast-container" class="toast-container"></div>
+
+<script src="/app.js"></script>
+
+<script>
+  // Close modal when clicking outside
+  function handleModalOverlayClick(e) {
+    if (e.target === document.getElementById('sub-modal')) closeModal();
+  }
+
+  // Keyboard shortcut: Escape closes modal
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+</body>
+</html>
