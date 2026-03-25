@@ -1,9 +1,49 @@
+# ── Virtual environments ──────────────────────────────────────
+# These MUST be here — if uvicorn reload watches these folders
+# it will crash-loop every time a package file changes
 .venv/
 venv/
+env/
+ENV/
+
+# ── Secrets — NEVER commit these ─────────────────────────────
 .env
+.env.local
+.env.*.local
+
+# ── Database & runtime data ───────────────────────────────────
+data/
+*.db
+*.sqlite
+*.sqlite3
+chroma/
+
+# ── Python cache ─────────────────────────────────────────────
 __pycache__/
 *.py[cod]
-*.db
-*.sqlite3
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+
+# ── Test & coverage ───────────────────────────────────────────
 .pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# ── IDE ───────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ── macOS ─────────────────────────────────────────────────────
 .DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────────
+*.log
+logs/

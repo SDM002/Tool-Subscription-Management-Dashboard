@@ -1,0 +1,4 @@
+[tool.watchfiles]
+ignore_paths = [".venv", "venv", "data"]
+[tool.watchfiles]
+ignore_paths = [".venv", "venv", "data"]

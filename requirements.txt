@@ -9,11 +9,12 @@ langchain==0.3.1
 langchain-core==0.3.6
 langchain-groq==0.2.0
 
-# MCP (YOUR architecture)
-#mcp==1.0.0
+# MCP
+# mcp==1.0.0   ← keep commented out, not needed for this project
 
 # Database
-sqlalchemy==2.0.30
+# [asyncio] is REQUIRED — installs greenlet which SQLAlchemy async needs
+sqlalchemy[asyncio]==2.0.30
 aiosqlite==0.20.0
 
 # Validation & config
