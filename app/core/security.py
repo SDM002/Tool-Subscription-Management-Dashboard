@@ -1,21 +1,29 @@
 """
-app/core/security.py  [NEW]
+app/core/security.py
 
-Password hashing helpers using passlib/bcrypt.
-Kept separate from JWT logic so each concern is isolated.
+Password hashing helpers.
+Uses bcrypt directly (bypassing passlib's version-mismatch bug with bcrypt 4.x).
+The passlib library has a compatibility issue with bcrypt>=4.0 where it passes
+a string instead of bytes. We use bcrypt directly to avoid this.
 """
 
-from passlib.context import CryptContext
-
-# bcrypt is the recommended algorithm — auto-upgrades hashes when needed
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+import bcrypt
 
 
 def hash_password(plain_password: str) -> str:
     """Return a bcrypt hash of the plain-text password."""
-    return pwd_context.hash(plain_password)
+    # bcrypt expects bytes; encode to utf-8
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(plain_password.encode("utf-8"), salt)
+    return hashed.decode("utf-8")
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """Return True if plain_password matches the stored hash."""
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return bcrypt.checkpw(
+            plain_password.encode("utf-8"),
+            hashed_password.encode("utf-8"),
+        )
+    except Exception:
+        return False

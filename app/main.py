@@ -69,7 +69,7 @@ def create_app() -> FastAPI:
     from app.auth.routes import router as auth_router
     from app.routes.subscriptions import router as sub_router
     from app.routes.dashboard import router as dash_router
-    from app.routes.chat import router as chat_router
+    from app.routes.chat import router as chat_router #
     from app.routes.health import router as health_router
 
     app.include_router(auth_router,   prefix="/api")
