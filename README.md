@@ -20,19 +20,19 @@ Browser  ──GET /api/chat/stream──►  FastAPI (app/main.py)
                                     app/routes/chat.py
                                          │ spawns once
                                          ▼
-                               app/agent/agent_runner.py   ◄── YOUR agent_runner.py
+                               app/agent/agent_runner.py   ◄──  agent_runner.py
                                          │
-                                  LangGraph graph          ◄── YOUR graph.py
+                                  LangGraph graph          ◄──  graph.py
                                   (app/agent/graph.py)
                                     │           │
                               Groq LLM      tool_calls?
                             (llama-3.1)         │
                                                 ▼
-                                   app/mcp/client.py       ◄── YOUR client.py
+                                   app/mcp/client.py       ◄──  client.py (MCP client)
                                    (MCPClient singleton)
                                          │ stdin/stdout
                                          ▼
-                                   app/mcp/server.py       ◄── YOUR server.py
+                                   app/mcp/server.py       ◄──  server.py (MCP server)
                                    ┌────────────────────┐
                                    │  get_subscriptions  │
                                    │  get_spending_summary│
