@@ -1,4 +1,3 @@
-"""app/routes/dashboard.py — summary, renewals, insights."""
 import asyncio
 import functools
 from fastapi import APIRouter, Depends, Query

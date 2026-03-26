@@ -1,29 +1,3 @@
-"""
-app/agent/agent_runner.py
-═══════════════════════════════════════════════════════════════════
-THE BRIDGE — mirrors your exact agent_runner.py pattern.
-
-This is the heart of your architecture. It:
-
-1. Reads messages from stdin  {"message": "...", "user_id": 1, "session_id": "..."}
-2. Loads short-term memory (SQL) — last N messages for this session
-3. Searches long-term memory (ChromaDB) — relevant past context
-4. Builds message list: [SystemMessage, ...history, HumanMessage]
-5. Calls agent_graph.invoke() — LangGraph runs
-6. If LLM returns tool_calls → MCPClient executes them → injects ToolMessages
-7. Loops until LLM gives a final text answer (no more tool_calls)
-8. Applies guardrails (weak/greeting response detection)
-9. Streams response back to stdout chunk by chunk
-10. Saves to short-term SQL memory + long-term ChromaDB
-
-Run as:
-  python -m app.agent.agent_runner
-
-Called by:
-  api.py  (spawns this as a subprocess, communicates via stdin/stdout)
-═══════════════════════════════════════════════════════════════════
-"""
-
 import asyncio
 import json
 import sys

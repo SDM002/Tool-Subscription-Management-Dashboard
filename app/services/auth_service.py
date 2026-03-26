@@ -1,4 +1,3 @@
-"""app/services/auth_service.py — register and login business logic."""
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

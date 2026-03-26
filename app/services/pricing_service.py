@@ -1,13 +1,3 @@
-"""
-app/services/pricing_service.py  [NEW]
-
-Generates actionable spending insights:
-  - duplicate / overlapping tools in the same category
-  - high-cost subscriptions
-  - potential annual savings from billing-cycle switches
-  - category-level summaries
-"""
-
 from dataclasses import dataclass, field
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

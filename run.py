@@ -1,7 +1,4 @@
-"""
-run.py
-Entry point — python run.py
-"""
+
 import uvicorn
 from app.core.config import settings
 

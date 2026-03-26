@@ -1,4 +1,3 @@
-"""app/services/subscription_service.py — CRUD with user isolation enforced on every query."""
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession

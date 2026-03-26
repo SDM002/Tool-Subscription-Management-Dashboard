@@ -1,11 +1,4 @@
-"""
-app/core/security.py
 
-Password hashing helpers.
-Uses bcrypt directly (bypassing passlib's version-mismatch bug with bcrypt 4.x).
-The passlib library has a compatibility issue with bcrypt>=4.0 where it passes
-a string instead of bytes. We use bcrypt directly to avoid this.
-"""
 
 import bcrypt
 

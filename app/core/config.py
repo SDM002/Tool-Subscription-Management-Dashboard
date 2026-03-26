@@ -1,7 +1,4 @@
-"""
-app/core/config.py
-All settings loaded from .env — one place, no scattered os.getenv() calls.
-"""
+
 from functools import lru_cache
 from pydantic_settings import BaseSettings, SettingsConfigDict
 

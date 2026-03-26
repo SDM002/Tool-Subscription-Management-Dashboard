@@ -1,22 +1,3 @@
-"""
-app/agent/graph.py
-═══════════════════════════════════════════════════════════════════
-LANGGRAPH — mirrors your exact graph.py pattern.
-
-Flow:
-  agent_node  →  should_use_tool  →  tool_node  →  agent_node  → ...
-                       │
-                       └── END (when no tool_calls)
-
-Key design decisions (same as your original):
-  - LLM is Groq via langchain-groq
-  - Tool SCHEMAS are defined here (StructuredTool with func=lambda: None)
-  - Tool EXECUTION happens in agent_runner.py via MCPClient
-  - tool_node here is a PLACEHOLDER — it just satisfies LangGraph flow
-  - Actual results are injected as ToolMessages in agent_runner.py
-═══════════════════════════════════════════════════════════════════
-"""
-
 import os
 from typing import TypedDict, List
 

@@ -1,4 +1,4 @@
-"""app/models/subscription.py — subscriptions table."""
+
 from datetime import date, datetime, timezone
 from sqlalchemy import Boolean, Date, DateTime, Float, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship

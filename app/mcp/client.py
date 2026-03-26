@@ -1,20 +1,3 @@
-"""
-app/mcp/client.py
-═══════════════════════════════════════════════════════════════════
-MCP CLIENT — mirrors your original client.py exactly.
-
-Singleton pattern: the MCP server subprocess is started once and
-reused for every tool call. This avoids the cost of spawning a new
-process on every request.
-
-How it works:
-  1. On first call, _start_server() spawns app/mcp/server.py as a subprocess
-  2. call_tool() writes a JSON-RPC request to the server's stdin
-  3. call_tool() reads the JSON-RPC response from the server's stdout
-  4. Returns the parsed result dict back to the caller (tool_node in graph.py)
-═══════════════════════════════════════════════════════════════════
-"""
-
 import json
 import subprocess
 import sys

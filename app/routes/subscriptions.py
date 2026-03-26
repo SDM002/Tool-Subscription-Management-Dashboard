@@ -1,4 +1,3 @@
-"""app/routes/subscriptions.py — CRUD endpoints, all protected by JWT."""
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 

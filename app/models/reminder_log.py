@@ -1,4 +1,4 @@
-"""app/models/reminder_log.py — prevents duplicate email reminders."""
+
 from datetime import date, datetime, timezone
 from sqlalchemy import Date, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship

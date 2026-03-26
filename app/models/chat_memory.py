@@ -1,4 +1,4 @@
-"""app/models/chat_memory.py — short-term conversation history in SQL."""
+
 from datetime import datetime, timezone
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship

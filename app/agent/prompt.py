@@ -1,8 +1,3 @@
-"""
-app/agent/prompt.py
-System prompt injected at the start of every conversation.
-Same pattern as your original prompt.py.
-"""
 
 SYSTEM_PROMPT = """You are an intelligent subscription management assistant.
 

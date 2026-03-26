@@ -1,7 +1,4 @@
-"""
-app/auth/jwt_handler.py
-Create and decode JWT tokens using python-jose.
-"""
+
 from datetime import datetime, timedelta, timezone
 from typing import Any
 from jose import JWTError, jwt

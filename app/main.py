@@ -1,11 +1,4 @@
-"""
-app/main.py
-FastAPI application factory.
-- Creates DB tables on startup
-- Registers all routers under /api
-- Starts the reminder scheduler
-- Serves the static frontend
-"""
+
 import logging
 import os
 from contextlib import asynccontextmanager

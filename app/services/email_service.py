@@ -1,4 +1,3 @@
-"""app/services/email_service.py — async SMTP email using aiosmtplib."""
 import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText

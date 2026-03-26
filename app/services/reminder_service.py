@@ -1,9 +1,3 @@
-"""
-app/services/reminder_service.py
-APScheduler fires every N hours.
-Finds subscriptions renewing within REMINDER_DAYS_BEFORE days.
-Checks reminder_logs to avoid duplicate sends.
-"""
 import logging
 from datetime import date, timedelta
 

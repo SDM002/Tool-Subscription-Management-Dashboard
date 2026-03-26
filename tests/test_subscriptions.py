@@ -1,4 +1,3 @@
-"""tests/test_subscriptions.py"""
 import pytest
 from datetime import date, timedelta
 

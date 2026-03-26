@@ -1,26 +1,3 @@
-"""
-app/mcp/server.py
-═══════════════════════════════════════════════════════════════════
-MCP SERVER — This is where tools are ACTUALLY EXECUTED.
-
-Your architecture:
-  graph.py defines tool SCHEMAS (LangGraph knows the shape)
-  THIS FILE executes the actual tool logic
-
-Tools:
-  get_subscriptions      → list all active subscriptions
-  get_spending_summary   → monthly/yearly totals + by category
-  get_upcoming_renewals  → renewals within N days
-  get_spending_insights  → duplicates, savings, high-cost alerts
-  get_alternatives       → free/cheaper alternatives for a tool
-
-The server reads from stdin and writes to stdout (MCP stdio protocol).
-It is launched as a subprocess by MCPClient (client.py).
-It uses its own synchronous SQLite connection because it runs in a
-separate process — not inside FastAPI's async loop.
-═══════════════════════════════════════════════════════════════════
-"""
-
 import json
 import sys
 import os

@@ -1,4 +1,3 @@
-"""tests/test_auth.py"""
 import pytest
 
 

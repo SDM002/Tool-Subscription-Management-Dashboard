@@ -1,8 +1,4 @@
-"""
-app/auth/dependencies.py
-get_current_user — FastAPI dependency that protects every route.
-Add Depends(get_current_user) to any route to require a valid JWT.
-"""
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jose import JWTError

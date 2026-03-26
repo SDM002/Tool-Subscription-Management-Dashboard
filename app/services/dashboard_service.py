@@ -1,4 +1,3 @@
-"""app/services/dashboard_service.py — spending totals and renewal calculations."""
 from collections import defaultdict
 from datetime import date, timedelta
 

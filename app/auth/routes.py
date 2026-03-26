@@ -1,4 +1,4 @@
-"""app/auth/routes.py — /api/auth/* endpoints."""
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 

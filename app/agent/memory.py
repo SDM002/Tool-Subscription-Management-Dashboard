@@ -1,18 +1,4 @@
-"""
-app/agent/memory.py
-Two-layer memory:
 
-SHORT-TERM (SQL)
-  - Last N messages per (user_id, session_id)
-  - Loaded at start of each turn as LangChain message objects
-  - Saved after each turn
-
-LONG-TERM (ChromaDB)
-  - Semantically meaningful summaries of past exchanges
-  - Searched by cosine similarity at start of each turn
-  - Injected into the system prompt as context
-  - One collection per user for isolation
-"""
 
 import logging
 import uuid

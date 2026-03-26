@@ -1,14 +1,3 @@
-"""
-seed.py
-Populate the database with a demo user and realistic subscriptions.
-
-Usage:
-    python seed.py
-
-Demo login:
-    Email:    demo@example.com
-    Password: Demo1234
-"""
 import asyncio
 from datetime import date, timedelta
 

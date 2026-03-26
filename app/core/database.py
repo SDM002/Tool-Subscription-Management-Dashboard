@@ -1,8 +1,4 @@
-"""
-app/core/database.py
-Async SQLAlchemy engine + session.
-Swap DATABASE_URL to PostgreSQL without touching anything else.
-"""
+
 import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator

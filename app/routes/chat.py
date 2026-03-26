@@ -1,22 +1,3 @@
-"""
-app/routes/chat.py
-══════════════════════════════════════════════════════════════════
-CHAT ROUTE — POST /api/chat
-
-This is the HTTP bridge between the frontend and the LangGraph agent.
-
-Flow:
-  Browser  →  POST /api/chat  →  run_agent()  →  LangGraph  →  MCP  →  Groq LLM
-                                                                           ↓
-  Browser  ←  JSON {session_id, reply}  ←────────────────────────────────
-
-Why this design?
-  - The route is kept thin (no business logic here)
-  - All intelligence lives in app/agent/agent_runner.py
-  - JWT authentication ensures user isolation (each user's memory is separate)
-  - session_id is returned so the frontend can maintain conversation threads
-══════════════════════════════════════════════════════════════════
-"""
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
