@@ -13,32 +13,38 @@ DB_PATH = os.path.join(
 
 # ── Alternatives knowledge base ───────────────────────────────
 ALTERNATIVES_DB: dict[str, list[dict]] = {
-    "figma":      [{"name": "Penpot",      "price": "Free (open source)", "url": "https://penpot.app"},
-                   {"name": "Lunacy",      "price": "Free",               "url": "https://icons8.com/lunacy"}],
-    "notion":     [{"name": "Obsidian",    "price": "Free (local)",       "url": "https://obsidian.md"},
-                   {"name": "AppFlowy",    "price": "Free (open source)", "url": "https://appflowy.io"},
-                   {"name": "Logseq",      "price": "Free",               "url": "https://logseq.com"}],
-    "slack":      [{"name": "Discord",     "price": "Free",               "url": "https://discord.com"},
-                   {"name": "Mattermost",  "price": "Free (self-hosted)", "url": "https://mattermost.com"},
-                   {"name": "Zulip",       "price": "Free (open source)", "url": "https://zulip.com"}],
-    "github":     [{"name": "GitLab",      "price": "Free tier",          "url": "https://gitlab.com"},
-                   {"name": "Gitea",       "price": "Free (self-hosted)", "url": "https://gitea.io"}],
-    "jira":       [{"name": "Linear",      "price": "Free tier",          "url": "https://linear.app"},
-                   {"name": "Plane",       "price": "Free (open source)", "url": "https://plane.so"}],
-    "zoom":       [{"name": "Google Meet", "price": "Free with Google",   "url": "https://meet.google.com"},
-                   {"name": "Jitsi Meet",  "price": "Free (open source)", "url": "https://meet.jit.si"}],
-    "dropbox":    [{"name": "Nextcloud",   "price": "Free (self-hosted)", "url": "https://nextcloud.com"},
-                   {"name": "Mega",        "price": "20 GB free",         "url": "https://mega.io"}],
-    "grammarly":  [{"name": "LanguageTool","price": "Free tier",          "url": "https://languagetool.org"},
-                   {"name": "Hemingway",   "price": "$19.99 one-time",    "url": "https://hemingwayapp.com"}],
-    "trello":     [{"name": "Planka",      "price": "Free (self-hosted)", "url": "https://planka.app"},
-                   {"name": "Wekan",       "price": "Free (self-hosted)", "url": "https://wekan.github.io"}],
-    "1password":  [{"name": "Bitwarden",   "price": "Free (open source)", "url": "https://bitwarden.com"},
-                   {"name": "KeePassXC",   "price": "Free (local)",       "url": "https://keepassxc.org"}],
-    "loom":       [{"name": "OBS Studio",  "price": "Free (open source)", "url": "https://obsproject.com"},
-                   {"name": "Cap",         "price": "Free tier",          "url": "https://cap.so"}],
-    "vercel":     [{"name": "Netlify",     "price": "Free tier",          "url": "https://netlify.com"},
-                   {"name": "Cloudflare Pages","price":"Free tier",       "url": "https://pages.cloudflare.com"}],
+    "figma":      [{"name": "Penpot",       "price": "Free (open source)", "url": "https://penpot.app"},
+                   {"name": "Lunacy",        "price": "Free",               "url": "https://icons8.com/lunacy"}],
+    "notion":     [{"name": "Obsidian",      "price": "Free (local)",       "url": "https://obsidian.md"},
+                   {"name": "AppFlowy",      "price": "Free (open source)", "url": "https://appflowy.io"},
+                   {"name": "Logseq",        "price": "Free",               "url": "https://logseq.com"}],
+    "slack":      [{"name": "Discord",       "price": "Free",               "url": "https://discord.com"},
+                   {"name": "Mattermost",    "price": "Free (self-hosted)", "url": "https://mattermost.com"},
+                   {"name": "Zulip",         "price": "Free (open source)", "url": "https://zulip.com"}],
+    "github":     [{"name": "GitLab",        "price": "Free tier",          "url": "https://gitlab.com"},
+                   {"name": "Gitea",         "price": "Free (self-hosted)", "url": "https://gitea.io"}],
+    "jira":       [{"name": "Linear",        "price": "Free tier",          "url": "https://linear.app"},
+                   {"name": "Plane",         "price": "Free (open source)", "url": "https://plane.so"}],
+    "zoom":       [{"name": "Google Meet",   "price": "Free with Google",   "url": "https://meet.google.com"},
+                   {"name": "Jitsi Meet",    "price": "Free (open source)", "url": "https://meet.jit.si"}],
+    "dropbox":    [{"name": "Nextcloud",     "price": "Free (self-hosted)", "url": "https://nextcloud.com"},
+                   {"name": "Mega",          "price": "20 GB free",         "url": "https://mega.io"}],
+    "grammarly":  [{"name": "LanguageTool",  "price": "Free tier",          "url": "https://languagetool.org"},
+                   {"name": "Hemingway",     "price": "$19.99 one-time",    "url": "https://hemingwayapp.com"}],
+    "trello":     [{"name": "Planka",        "price": "Free (self-hosted)", "url": "https://planka.app"},
+                   {"name": "Wekan",         "price": "Free (self-hosted)", "url": "https://wekan.github.io"}],
+    "1password":  [{"name": "Bitwarden",     "price": "Free (open source)", "url": "https://bitwarden.com"},
+                   {"name": "KeePassXC",     "price": "Free (local)",       "url": "https://keepassxc.org"}],
+    "loom":       [{"name": "OBS Studio",    "price": "Free (open source)", "url": "https://obsproject.com"},
+                   {"name": "Cap",           "price": "Free tier",          "url": "https://cap.so"}],
+    "vercel":     [{"name": "Netlify",       "price": "Free tier",          "url": "https://netlify.com"},
+                   {"name": "Cloudflare Pages", "price": "Free tier",       "url": "https://pages.cloudflare.com"}],
+    "adobe":      [{"name": "GIMP",          "price": "Free (open source)", "url": "https://gimp.org"},
+                   {"name": "Canva",         "price": "Free tier",          "url": "https://canva.com"}],
+    "chatgpt":    [{"name": "Groq (llama)",  "price": "Free API",           "url": "https://console.groq.com"},
+                   {"name": "Claude",        "price": "Free tier",          "url": "https://claude.ai"}],
+    "mixpanel":   [{"name": "PostHog",       "price": "Free (open source)", "url": "https://posthog.com"},
+                   {"name": "Plausible",     "price": "$9/mo",              "url": "https://plausible.io"}],
 }
 
 
@@ -62,14 +68,14 @@ def tool_get_subscriptions(user_id: int) -> dict:
 
     subs = []
     for r in rows:
-        price    = r[3] or 0.0
-        cycle    = r[5] or "monthly"
-        monthly  = price if cycle == "monthly" else \
-                   round(price / 3, 2) if cycle == "quarterly" else \
-                   round(price / 12, 2) if cycle == "yearly" else 0.0
-        yearly   = round(price * 12, 2) if cycle == "monthly" else \
-                   round(price * 4,  2) if cycle == "quarterly" else \
-                   price if cycle == "yearly" else price
+        price   = r[3] or 0.0
+        cycle   = r[5] or "monthly"
+        monthly = price if cycle == "monthly" else \
+                  round(price / 3, 2) if cycle == "quarterly" else \
+                  round(price / 12, 2) if cycle == "yearly" else 0.0
+        yearly  = round(price * 12, 2) if cycle == "monthly" else \
+                  round(price * 4, 2)  if cycle == "quarterly" else \
+                  price if cycle == "yearly" else price
 
         subs.append({
             "id": r[0], "tool_name": r[1], "category": r[2],
@@ -97,9 +103,9 @@ def tool_get_spending_summary(user_id: int) -> dict:
         by_cat[s["category"]]["tools"].append(s["tool_name"])
 
     return {
-        "active_count":    len(subs),
-        "total_monthly":   total_monthly,
-        "total_yearly":    total_yearly,
+        "active_count":  len(subs),
+        "total_monthly": total_monthly,
+        "total_yearly":  total_yearly,
         "by_category": [
             {
                 "category": cat,
@@ -122,108 +128,119 @@ def tool_get_upcoming_renewals(user_id: int, days: int = 30) -> dict:
         rows = db.execute(
             "SELECT id, tool_name, category, price, currency, billing_cycle, renewal_date "
             "FROM subscriptions "
-            "WHERE user_id=? AND is_active=1 "
-            "  AND renewal_date>=? AND renewal_date<=? "
+            "WHERE user_id=? AND is_active=1 AND renewal_date IS NOT NULL "
+            "  AND renewal_date >= ? AND renewal_date <= ? "
             "ORDER BY renewal_date",
             (user_id, today.isoformat(), end_date.isoformat())
         ).fetchall()
 
-    renewals = [
-        {
+    renewals = []
+    for r in rows:
+        rd        = r[6]
+        days_left = (date.fromisoformat(rd) - today).days if rd else None
+        renewals.append({
             "id": r[0], "tool_name": r[1], "category": r[2],
             "price": r[3], "currency": r[4], "billing_cycle": r[5],
-            "renewal_date": r[6],
-            "days_until_renewal": (date.fromisoformat(r[6]) - today).days,
-        }
-        for r in rows
-    ]
+            "renewal_date": rd, "days_until_renewal": days_left,
+        })
 
-    return {"window_days": days, "count": len(renewals), "renewals": renewals}
+    return {"count": len(renewals), "days_window": days, "renewals": renewals}
 
 
 # ── Tool: get_spending_insights ───────────────────────────────
 def tool_get_spending_insights(user_id: int) -> dict:
-    """Duplicates, annual billing savings, high-cost alerts."""
-    data = tool_get_subscriptions(user_id)
-    subs = data["subscriptions"]
+    """Cost-saving suggestions: duplicates, annual savings, high-cost alerts."""
+    data     = tool_get_subscriptions(user_id)
+    subs     = data["subscriptions"]
     insights = []
 
-    # Duplicates — multiple tools in same category
-    cat_tools: dict[str, list[str]] = defaultdict(list)
+    # Duplicate tools in same category
+    cat_tools: dict[str, list] = defaultdict(list)
     for s in subs:
-        cat_tools[s["category"]].append(s["tool_name"])
+        cat_tools[s["category"]].append(s)
 
     for cat, tools in cat_tools.items():
         if len(tools) >= 2:
+            names = [t["tool_name"] for t in tools]
+            total = round(sum(t["monthly_cost"] for t in tools), 2)
             insights.append({
                 "type":           "duplicate",
                 "title":          f"Multiple tools in '{cat}'",
-                "detail":         f"You have {len(tools)} tools in '{cat}': {', '.join(tools)}. Consider consolidating.",
-                "affected_tools": tools,
-                "potential_saving": 0.0,
+                "detail":         f"You have {len(tools)} tools in '{cat}': {', '.join(names)}. Consider consolidating.",
+                "affected_tools": names,
+                "potential_saving": round(min(t["monthly_cost"] for t in tools) * 12, 2),
             })
 
-    # Annual billing savings — monthly subs > $5
+    # Annual billing savings (~17%)
     for s in subs:
-        if s["billing_cycle"] == "monthly" and s["price"] > 5:
-            annual_monthly = s["price"] * 12
-            estimated      = round(annual_monthly * 0.83, 2)
-            saving         = round(annual_monthly - estimated, 2)
+        if s["billing_cycle"] == "monthly" and s["monthly_cost"] >= 10:
+            annual_current = s["yearly_cost"]
+            annual_saving  = round(annual_current * 0.17, 2)
             insights.append({
                 "type":           "annual_saving",
                 "title":          f"Switch '{s['tool_name']}' to annual billing",
-                "detail":         f"Monthly costs ${annual_monthly:.2f}/yr. Annual plans save ~17% (≈${saving:.2f}/yr).",
+                "detail":         f"Monthly costs ${annual_current:.2f}/yr. Annual plans typically save ~17%.",
                 "affected_tools": [s["tool_name"]],
-                "potential_saving": saving,
+                "potential_saving": annual_saving,
             })
 
-    # High-cost alerts — > $50/month
+    # High-cost alerts
     for s in subs:
-        if s["monthly_cost"] > 50:
+        if s["monthly_cost"] >= 40:
             insights.append({
                 "type":           "high_cost",
                 "title":          f"High spend on '{s['tool_name']}'",
                 "detail":         f"Costs ${s['monthly_cost']:.2f}/mo (${s['yearly_cost']:.2f}/yr). Review usage.",
                 "affected_tools": [s["tool_name"]],
-                "potential_saving": 0.0,
+                "potential_saving": 0,
             })
 
-    # Summary
-    total_m = round(sum(s["monthly_cost"] for s in subs), 2)
-    total_y = round(sum(s["yearly_cost"]  for s in subs), 2)
+    # Summary insight
+    total_monthly = round(sum(s["monthly_cost"] for s in subs), 2)
     insights.append({
-        "type":  "summary",
-        "title": "Total subscription spend",
-        "detail": f"{len(subs)} active subscriptions costing ${total_m:.2f}/month (${total_y:.2f}/year).",
+        "type":           "summary",
+        "title":          "Total subscription spend",
+        "detail":         f"{len(subs)} active subscriptions costing ${total_monthly:.2f}/month.",
         "affected_tools": [],
-        "potential_saving": 0.0,
+        "potential_saving": 0,
     })
 
-    insights.sort(key=lambda x: x["potential_saving"], reverse=True)
     return {"count": len(insights), "insights": insights}
 
 
 # ── Tool: get_alternatives ────────────────────────────────────
 def tool_get_alternatives(tool_name: str) -> dict:
-    """Return free/cheaper alternatives for a named tool."""
+    """Get free or cheaper alternatives for a specific tool."""
     name_lower = tool_name.lower().strip()
+    # Try exact match first, then partial match
     for key, alts in ALTERNATIVES_DB.items():
         if key in name_lower or name_lower in key:
             return {"tool": tool_name, "found": True, "alternatives": alts}
     return {
         "tool": tool_name, "found": False, "alternatives": [],
         "message": f"No specific alternatives for '{tool_name}' in the knowledge base. "
-                   "Try https://alternativeto.net",
+                   "Consider searching AlternativeTo.net for community suggestions.",
     }
 
 
 # ── Tool dispatcher ───────────────────────────────────────────
 TOOLS = {
-    "get_subscriptions":    lambda args: tool_get_subscriptions(args["user_id"]),
-    "get_spending_summary": lambda args: tool_get_spending_summary(args["user_id"]),
-    "get_upcoming_renewals":lambda args: tool_get_upcoming_renewals(args["user_id"], args.get("days", 30)),
-    "get_spending_insights":lambda args: tool_get_spending_insights(args["user_id"]),
-    "get_alternatives":     lambda args: tool_get_alternatives(args["tool_name"]),
+    "get_subscriptions":     lambda args: tool_get_subscriptions(
+        int(args.get("user_id", args.get("userId", 0)))
+    ),
+    "get_spending_summary":  lambda args: tool_get_spending_summary(
+        int(args.get("user_id", args.get("userId", 0)))
+    ),
+    "get_upcoming_renewals": lambda args: tool_get_upcoming_renewals(
+        int(args.get("user_id", args.get("userId", 0))),
+        int(args.get("days", 30))
+    ),
+    "get_spending_insights": lambda args: tool_get_spending_insights(
+        int(args.get("user_id", args.get("userId", 0)))
+    ),
+    "get_alternatives":      lambda args: tool_get_alternatives(
+        args.get("tool_name") or args.get("name") or args.get("toolName") or "unknown"
+    ),
 }
 
 TOOL_SCHEMAS = [
@@ -233,7 +250,7 @@ TOOL_SCHEMAS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "user_id": {"type": "integer", "description": "The authenticated user ID"}
+                "user_id": {"type": "integer", "description": "The user ID to fetch subscriptions for"}
             },
             "required": ["user_id"],
         },
@@ -244,19 +261,19 @@ TOOL_SCHEMAS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "user_id": {"type": "integer", "description": "The authenticated user ID"}
+                "user_id": {"type": "integer", "description": "The user ID"}
             },
             "required": ["user_id"],
         },
     },
     {
         "name": "get_upcoming_renewals",
-        "description": "Get subscriptions renewing within the next N days. Use this for 'what renews this week', 'due soon', etc.",
+        "description": "Get subscriptions renewing within the next N days.",
         "input_schema": {
             "type": "object",
             "properties": {
-                "user_id": {"type": "integer", "description": "The authenticated user ID"},
-                "days":    {"type": "integer", "description": "Look-ahead window in days (default 30)"},
+                "user_id": {"type": "integer", "description": "The user ID"},
+                "days":    {"type": "integer", "description": "Number of days to look ahead (default 30)"},
             },
             "required": ["user_id"],
         },
@@ -267,14 +284,14 @@ TOOL_SCHEMAS = [
         "input_schema": {
             "type": "object",
             "properties": {
-                "user_id": {"type": "integer", "description": "The authenticated user ID"}
+                "user_id": {"type": "integer", "description": "The user ID"}
             },
             "required": ["user_id"],
         },
     },
     {
         "name": "get_alternatives",
-        "description": "Get free or cheaper alternatives to a specific tool (e.g. Figma, Notion, Slack).",
+        "description": "Get free or cheaper alternatives to a specific tool like Figma, Notion, Slack, GitHub, Jira.",
         "input_schema": {
             "type": "object",
             "properties": {
@@ -286,21 +303,22 @@ TOOL_SCHEMAS = [
 ]
 
 
-# ── MCP stdio server loop ─────────────────────────────────────
-def main():
+# ── JSON-RPC server loop ──────────────────────────────────────
+def serve():
     """
     Reads JSON-RPC requests from stdin, writes responses to stdout.
-    This is the MCP stdio protocol — same pattern as your original server.py.
+    Runs forever until stdin is closed.
     """
     for line in sys.stdin:
         line = line.strip()
         if not line:
             continue
 
+        response = {}
         try:
-            request = json.loads(line)
-            method  = request.get("method", "")
-            req_id  = request.get("id")
+            request  = json.loads(line)
+            req_id   = request.get("id")
+            method   = request.get("method", "")
 
             if method == "tools/list":
                 response = {"id": req_id, "result": TOOL_SCHEMAS}
@@ -328,4 +346,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    serve()

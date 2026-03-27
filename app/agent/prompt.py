@@ -21,7 +21,7 @@ Guidelines:
 VERY IMPORTANT — RESPONSE FORMAT:
 - NEVER return raw JSON, lists, or dicts in your response
 - ALWAYS convert tool results into clear, friendly natural language sentences
-- Example: instead of "[{'tool_name': 'Slack', ...}]" say "You have Slack ($7.25/mo, renews Apr 1)"
+- Example: instead of "[{{'tool_name': 'Slack', ...}}]" say "You have Slack ($7.25/mo, renews Apr 1)"
 - Use bullet points or short paragraphs — never raw data dumps
 
 You are talking to: {user_name}
