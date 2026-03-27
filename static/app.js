@@ -371,10 +371,8 @@ function sendChat() {
   if (!msg) return;
   input.value = "";
   appendMsg("user", msg);
-  setTyping(true);
   document.getElementById("send-btn").disabled = true;
 
-  var params = "message=" + encodeURIComponent(msg) + "&session_id=" + encodeURIComponent(state.sessionId || "");
   var msgs   = document.getElementById("chat-msgs");
   var botDiv = document.createElement("div");
   botDiv.className = "msg ai";
@@ -382,39 +380,28 @@ function sendChat() {
     new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) + "</div></div>";
   msgs.appendChild(botDiv);
   msgs.scrollTop = msgs.scrollHeight;
-  setTyping(false);
   var bubble = document.getElementById("sbubble");
   if (bubble) bubble.removeAttribute("id");
 
-  fetch("/api/chat/stream?" + params, { headers: { "Authorization": "Bearer " + state.token } })
-    .then(function(res) {
-      var reader = res.body.getReader();
-      var dec    = new TextDecoder();
-      var buf    = "";
-      function read() {
-        reader.read().then(function(r) {
-          if (r.done) { document.getElementById("send-btn").disabled = false; return; }
-          buf += dec.decode(r.value, { stream: true });
-          var lines = buf.split("\n"); buf = lines.pop();
-          lines.forEach(function(line) {
-            if (!line.startsWith("data: ")) return;
-            try {
-              var d = JSON.parse(line.slice(6));
-              if (d.text  && bubble) { bubble.textContent += d.text; msgs.scrollTop = msgs.scrollHeight; }
-              if (d.session_id) state.sessionId = d.session_id;
-              if (d.end)  document.getElementById("send-btn").disabled = false;
-              if (d.error && bubble) bubble.textContent = "Error: " + d.error;
-            } catch(e) {}
-          });
-          read();
-        });
-      }
-      read();
-    })
-    .catch(function(err) {
-      if (bubble) bubble.textContent = "Error: " + err.message;
-      document.getElementById("send-btn").disabled = false;
-    });
+
+  fetch("/api/chat", {
+  method: "POST",
+  headers: { "Content-Type": "application/json", "Authorization": "Bearer " + state.token },
+  body: JSON.stringify({ message: msg, session_id: state.sessionId || "" })
+})
+.then(function(res) { return res.json(); })
+.then(function(d) {
+  if (d.reply && bubble) { bubble.innerHTML = d.reply.replace(/\n/g,"<br>"); msgs.scrollTop = msgs.scrollHeight; }
+  if (d.session_id) state.sessionId = d.session_id;
+  if (d.detail && bubble) bubble.textContent = "Error: " + d.detail;
+  document.getElementById("send-btn").disabled = false;
+})
+.catch(function(err) {
+  if (bubble) bubble.textContent = "Error: " + err.message;
+  document.getElementById("send-btn").disabled = false;
+});
+
+
 }
 
 function appendMsg(role, content) {
