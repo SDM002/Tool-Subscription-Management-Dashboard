@@ -21,7 +21,7 @@ from app.mcp.client import MCPClient
 CHUNK_SIZE = 20
 
 
-# ── Guardrails (same as your original) ───────────────────────
+# ── Guardrails ───────────────────────
 
 def is_greeting(text: str) -> bool:
     return text.lower().strip() in {"hi", "hello", "hey", "good morning", "good evening", "good afternoon"}
@@ -95,7 +95,7 @@ async def run_agent(user_message: str, user_id: int, session_id: str) -> str:
 
                 try:
                     result_data = mcp.call_tool(tool_name, tool_args)
-                    content     = json.dumps(result_data, default=str)
+                    content = json.dumps(result_data, default=str) if not isinstance(result_data, str) else result_data
                 except Exception as exc:
                     content = json.dumps({"error": str(exc)})
 

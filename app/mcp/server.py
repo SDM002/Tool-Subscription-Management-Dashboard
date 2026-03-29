@@ -5,11 +5,14 @@ import sqlite3
 from datetime import date, timedelta
 from collections import defaultdict
 
-# ── DB path (same file FastAPI uses) ─────────────────────────
-DB_PATH = os.path.join(
-    os.path.dirname(os.path.dirname(os.path.dirname(__file__))),
+# Use the directory where the server is actually launched from (project root)
+# Fall back to __file__-relative path if CWD doesn't have the DB
+_cwd_path  = os.path.join(os.getcwd(), "data", "subscriptions.db")
+_file_path = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
     "data", "subscriptions.db"
 )
+DB_PATH = _cwd_path if os.path.exists(_cwd_path) else _file_path
 
 # ── Alternatives knowledge base ───────────────────────────────
 ALTERNATIVES_DB: dict[str, list[dict]] = {
@@ -43,6 +46,10 @@ ALTERNATIVES_DB: dict[str, list[dict]] = {
                    {"name": "Canva",         "price": "Free tier",          "url": "https://canva.com"}],
     "chatgpt":    [{"name": "Groq (llama)",  "price": "Free API",           "url": "https://console.groq.com"},
                    {"name": "Claude",        "price": "Free tier",          "url": "https://claude.ai"}],
+    "todoist":    [{"name": "TickTick",   "price": "Free tier", "url": "https://ticktick.com"},
+                   {"name": "Things 3",   "price": "$49.99 one-time", "url": "https://culturedcode.com"}],
+    "jetbrains":  [{"name": "VS Code",    "price": "Free",      "url": "https://code.visualstudio.com"},
+                   {"name": "Neovim",     "price": "Free",      "url": "https://neovim.io"}],
     "mixpanel":   [{"name": "PostHog",       "price": "Free (open source)", "url": "https://posthog.com"},
                    {"name": "Plausible",     "price": "$9/mo",              "url": "https://plausible.io"}],
 }
